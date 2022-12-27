@@ -1,5 +1,5 @@
 import os, requests, sys, re
-from core import settings, credential
+from core import settings
 from . import custom_functions
 from bs4 import BeautifulSoup
 from alive_progress import alive_bar
@@ -35,6 +35,8 @@ def check_credential():
     from core import credential
     print(credential.USERNAME)
 
+
+from core import credential
 
 def get_login_session():
   siambit_login_session = requests.Session()
