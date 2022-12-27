@@ -1,8 +1,11 @@
-from siambit.siambit import check_credential, screen_shot_scrapper
+from core.create_acc import check_credential
+
 
 def main():
   #(v) initiate credential
   check_credential()
+
+  from siambit.siambit import screen_shot_scrapper
   screen_shot_scrapper()
 
 
