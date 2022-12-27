@@ -43,7 +43,7 @@ def isLargeImage(url):
         image_raw = requests.get(url, headers=headers)
         image = Image.open(BytesIO(image_raw.content))
         width, height = image.size
-        if not(width < 300 or height < 300):
+        if not(width < 300 or height < 200):
             return True
         else:
             return False
@@ -89,6 +89,10 @@ def scrapingImages(url):
     '''
 
     result = []
+
+    if not isUrl(url):
+        return result
+
     user_agent_value = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '\
                        'AppleWebKit/537.36 (KHTML, like Gecko) '\
                        'Chrome/39.0.2171.95 Safari/537.36'
