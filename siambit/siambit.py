@@ -52,9 +52,10 @@ def get_torrents(siambit_page):
     if torrent_tag.has_attr('href'):
       torrent_detail_link = torrent_tag.attrs['href']
     
-    ss_tag = tag.find_all('a')[1]
-    if ss_tag.has_attr('href'):
-      screen_shot_link = ss_tag.attrs['href']
+    if len(tag.find_all('a')) > 1: # In case no screen shot
+      ss_tag = tag.find_all('a')[1]
+      if ss_tag.has_attr('href'):
+        screen_shot_link = ss_tag.attrs['href']
 
     torrent_details.append({
       'detail_url': settings.DOMAIN + '/' + torrent_detail_link,
