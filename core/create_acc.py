@@ -7,13 +7,19 @@ def create_credential_file():
   Create file that store username and password for siambit.
   '''
   try:
-    username = input('Username: ')
-    password = input('Password: ')
+    siambit_username = input('Siambit Username: ')
+    siambit_password = input('Siambit Password: ')
+    rapidgator_username = input('Rapidgator Username: ')
+    rapidgator_password = input('Rapidgator Password: ')
     credential_file_path = settings.BASE_DIR/'core/credential.py'
     with open(credential_file_path, 'x') as f:
-        f.write(f'USERNAME="{username}"')
+        f.write(f'SIAMBIT_USERNAME="{siambit_username}"')
         f.write('\n')
-        f.write(f'PASSWORD="{password}"')
+        f.write(f'SIAMBIT_PASSWORD="{siambit_password}"')
+        f.write('\n')
+        f.write(f'RAPIDGATOR_USERNAME="{rapidgator_username}"')
+        f.write('\n')
+        f.write(f'RAPIDGATOR_PASSWORD="{rapidgator_password}"')
 
   except:
       print("Error @ create_credential_file()")

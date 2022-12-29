@@ -8,8 +8,8 @@ def get_login_session():
   siambit_login_session = requests.Session()
   login_url = settings.SIAMBIT_LOGIN_URL
   data = {
-    'username': credential.USERNAME,
-    'password': credential.PASSWORD,
+    'username': credential.SIAMBIT_USERNAME,
+    'password': credential.SIAMBIT_PASSWORD,
     'returnto': '/'
   }
   headers = {'User-Agent': settings.USER_AGENT}

@@ -1,5 +1,8 @@
 from pathlib import Path
 
+
+#=== Siambit configs ===========================================================
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,3 +16,10 @@ MAIN_SEARCH_SIAMBIT_URL = 'https://www.siambit.me/viewbrsb.php'
 SIAMBIT_LOGIN_URL = 'https://www.siambit.me/takelogin.php'
 SEARCH_PICTURE_KEYWORDS = ['.png', '.jpg', '.jpeg', '.gif']
 MAX_IMAGE_LIMIT = 2
+
+
+
+#=== xidol configs =============================================================
+XIDOL_SEARCH_LISTS = [
+  'https://xidol.net/?s=imaizumi',
+]
