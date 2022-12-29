@@ -6,7 +6,7 @@ from alive_progress import alive_bar
 
 def get_login_session():
   siambit_login_session = requests.Session()
-  login_url = settings.SCRAPING_URLS["SIAMBIT_LOGIN_URL"]
+  login_url = settings.SIAMBIT_LOGIN_URL
   data = {
     'username': credential.USERNAME,
     'password': credential.PASSWORD,
@@ -67,25 +67,9 @@ def get_torrents(siambit_page):
   return torrent_details
 
 
-def write_result_html(torrents):
+def get_html_body_of_torrents(torrents):
   '''
-  Desc: Create a basic html that show torrent link with screen shot to output folder.
-  '''
-
-  header = '''
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-  </head>
-  <body>
-  '''
-  footer = '''
-  </body>
-  </html>
+  Desc: Create html body content of torrents for basic html file.
   '''
 
   content = ''
@@ -98,45 +82,121 @@ def write_result_html(torrents):
     a = f'<a href="{torrent_url}" target="_blank">{torrent_url}</a>'
     content += a
     content += '</div>'
+  return content
 
-  result_file_path = settings.BASE_DIR/'results/output.html'
+
+def create_basic_html(content, filename):
+  '''
+  Desc: Create a basic html that output folder.
+  '''
+
+  header = '''
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  
+  '''
+  body = f'''
+  <body>
+  {content}
+  </body>
+  '''
+  footer = '''
+  </html>
+  '''
+
+  result_file_path = settings.BASE_DIR/f'results/{filename}'
   result_file = open(result_file_path, 'w')
   result_file.writelines(header)
-  result_file.writelines(content)
+  result_file.writelines(body)
   result_file.writelines(footer)
   result_file.close()
 
+def user_input():
+  return
 
 def screen_shot_scrapper():
 
   #==== User Input =============================================================
-  print('Case: 1="All"')
-  print('      2="Jav Uncen"')
-  print('      3="Pics"')
-  print('      4="Jav Cen"')
-  print('      5="Clip"')
-  print('      6="Special"')
+  print('Case: 1 = All')
+  print('      2 = Jav Uncen')
+  print('      3 = Pics')
+  print('      4 = Jav Cen')
+  print('      5 = Clip')
+  print('      6 = Custom specific')
 
   category = int(input('Please select: '))
 
+  cat = ''
+  cat_string = ''
+
   if category == 1:
-    scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_ALL"]
+    cat = ''
+    cat_string = 'All'
   elif category == 2:
-    scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_JAVUNCEN"]
+    cat = 'cat=904'
+    cat_string = 'Jav Uncen'
   elif category == 3:
-    scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_PIC"]
+    cat = 'cat=911'
+    cat_string = 'Pics'
   elif category == 4:
-    scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_JAVCEN"]
+    cat = 'cat=903'
+    cat_string = 'Jav Cen'
   elif category == 5:
-    scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_CLIP"]
+    cat = 'cat=910'
+    cat_string = 'Clip'
   elif category == 6:
-    scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_SPECIAL"]
+    cat_custom_number = input('Please specifice cat number i.e. 912 : ')
+    cat = f'cat={cat_custom_number}'
+    cat_string = 'Custom'
+
+  # if category == 1:
+  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_ALL"]
+  # elif category == 2:
+  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_JAVUNCEN"]
+  # elif category == 3:
+  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_PIC"]
+  # elif category == 4:
+  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_JAVCEN"]
+  # elif category == 5:
+  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_CLIP"]
+  # elif category == 6:
+  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_SPECIAL"]
+
+
+  print('Sort by: 1 = Date, 2 = Seeding')
+  sort = int(input('Sorting: '))
+  sort_query =''
+  sort_string = ''
+  if sort == 1:
+    sort_query == 'sortby=15'
+    sort_string = 'Date'
+  elif sort == 2:
+    sort_query == 'sortby=8'
+    sort_string = 'Seeding'
+
+  page_num = int(input('Number of page to collect: '))
+
+  # Print conclusion
+  print(f'--- Category = {cat_string}, Sort by = {sort_string}, Total page = {page_num} ---')
+
+  scraping_urls = []
+  for i in range(page_num):
+    url = f'{settings.MAIN_SEARCH_SIAMBIT_URL}?{sort_query}&{cat}&page={i}'
+    scraping_urls.append(url)
+
+
   #==== End ====================================================================
 
   torrents = []
   for url in scraping_urls:
     torrents += get_torrents(url)
-
+    
   torrents_with_ss = []
   with alive_bar(len(torrents), dual_line=True, title='Extract images') as bar:
     for torrent in torrents:
@@ -156,4 +216,6 @@ def screen_shot_scrapper():
 
       bar()
 
-  write_result_html(torrents_with_ss)
+  html_body = get_html_body_of_torrents(torrents_with_ss)
+
+  create_basic_html(html_body, 'output.html')

@@ -30,4 +30,3 @@ def check_credential():
     create_credential_file()
   else:
     from core import credential
-    print(credential.USERNAME)

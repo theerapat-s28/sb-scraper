@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests, re
 from io import BytesIO
 from PIL import Image
-
+from core import settings
 
 # def get_attr(tag, search_attr):
 #   if tag.has
@@ -27,7 +27,7 @@ def addImgTag(url):
 
 # callback for filter
 def isImage(url):
-    keywords = ['.png', '.jpg', '.gif']
+    keywords = settings.SEARCH_PICTURE_KEYWORDS
     for keyword in keywords:
         condition = keyword+'$'
         if re.search(condition, url):
@@ -43,7 +43,7 @@ def isLargeImage(url):
         image_raw = requests.get(url, headers=headers)
         image = Image.open(BytesIO(image_raw.content))
         width, height = image.size
-        if not(width < 300 or height < 200):
+        if not(width < 300 or height < 250):
             return True
         else:
             return False
@@ -82,13 +82,16 @@ def arrFilter(callback, arr):
 
 def scrapingImages(url):
     '''
+    Params: url, String of image hosting url
+    Return: [], List of image url
     Desc: Extract list of image from image hosting site.
           Ex.
           url = https://imgur.com/udCQEGH
           Return ['https://i.imgur.com/udCQEGHh.jpg']
     '''
 
-    result = []
+    no_image_url = 'https://crpf.gov.in/writereaddata/Portal/DGIGMaster_Photos/1_126_1_istockphoto-1357365823-612x612.jpg'
+    result = [no_image_url]
 
     if not isUrl(url):
         return result
