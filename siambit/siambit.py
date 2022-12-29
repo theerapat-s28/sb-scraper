@@ -155,19 +155,6 @@ def screen_shot_scrapper():
     cat = f'cat={cat_custom_number}'
     cat_string = 'Custom'
 
-  # if category == 1:
-  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_ALL"]
-  # elif category == 2:
-  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_JAVUNCEN"]
-  # elif category == 3:
-  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_PIC"]
-  # elif category == 4:
-  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_JAVCEN"]
-  # elif category == 5:
-  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_CLIP"]
-  # elif category == 6:
-  #   scraping_urls = settings.SCRAPING_URLS["SIAMBIT_SCRAPING_URLS_SPECIAL"]
-
 
   print('Sort by: 1 = Date, 2 = Seeding')
   sort = int(input('Sorting: '))
@@ -196,7 +183,7 @@ def screen_shot_scrapper():
   torrents = []
   for url in scraping_urls:
     torrents += get_torrents(url)
-    
+
   torrents_with_ss = []
   with alive_bar(len(torrents), dual_line=True, title='Extract images') as bar:
     for torrent in torrents:
@@ -208,6 +195,8 @@ def screen_shot_scrapper():
           images.append(torrent['ss_url'])
         else:
           images = custom_functions.scrapingImages(torrent['ss_url'])
+          #(v) Limit number showing images
+          images = images[:settings.MAX_IMAGE_LIMIT]
 
       torrents_with_ss.append({
         'detail_url': torrent['detail_url'],
