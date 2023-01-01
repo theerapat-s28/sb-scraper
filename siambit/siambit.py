@@ -155,27 +155,30 @@ def screen_shot_scrapper():
     cat = f'cat={cat_custom_number}'
     cat_string = 'Custom'
 
-
   print('Sort by: 1 = Date, 2 = Seeding')
   sort = int(input('Sorting: '))
+
   sort_query =''
   sort_string = ''
   if sort == 1:
-    sort_query == 'sortby=15'
+    sort_query = 'sortby=15'
     sort_string = 'Date'
   elif sort == 2:
-    sort_query == 'sortby=8'
+    sort_query = 'sortby=8'
     sort_string = 'Seeding'
 
   page_num = int(input('Number of page to collect: '))
 
   # Print conclusion
   print(f'--- Category = {cat_string}, Sort by = {sort_string}, Total page = {page_num} ---')
+  print(f'Pages to be extracted are :')
 
   scraping_urls = []
   for i in range(page_num):
     url = f'{settings.MAIN_SEARCH_SIAMBIT_URL}?{sort_query}&{cat}&page={i}'
     scraping_urls.append(url)
+    print(f'  {url}')
+    
 
 
   #==== End ====================================================================
