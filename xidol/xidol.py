@@ -38,8 +38,11 @@ def get_rapidgator_url(page):
     try:
       r = requests.get(detail_page, headers=headers)
       detail_soup = BeautifulSoup(r.text, 'html.parser')
-      rapidgator = detail_soup.find(text='Rapidgator').parent.a.attrs['href']
-      rapidgators.append(rapidgator)
+      rapidgator = detail_soup.find(text='Rapidgator').parent
+      a_tags = rapidgator.find_all(name='a')
+      for tag in a_tags:
+        href =tag.attrs['href']
+        rapidgators.append(href)
     except:
       print(f'** Error extracting rapidfator url @ {detail_page}')
       fail_pages.append(detail_page)

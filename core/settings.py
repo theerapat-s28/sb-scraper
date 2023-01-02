@@ -21,5 +21,5 @@ MAX_IMAGE_LIMIT = 2
 
 #=== xidol configs =============================================================
 XIDOL_SEARCH_LISTS = [
-  'https://xidol.net/?s=imaizumi',
+  'https://xidol.net/?s=hikari+eto',
 ]
