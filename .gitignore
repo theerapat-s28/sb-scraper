@@ -4,3 +4,6 @@ results/*
 core/credential.py
 debug.py
 dev.py
+temp.html
+
+Session.vim

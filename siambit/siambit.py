@@ -22,16 +22,18 @@ def get_login_session():
   return siambit_login_session
 
 
-def get_torrents(siambit_page):
+def get_torrents(siambit_page:str, min_seeding:int=0):
   '''
   Params: siambit_page, ex. 'https://www.siambit.me/viewbrsb.php?sortby=8&cat=911&page=0'
+          min_seeding(default=0), ex. 50
   Return: List of detail url and screen shot url.
           Ex.
             {
               'detail_link': 'details.php?id=1853536&hashinfo=1912662',
               'ss_link': 'https://ibb.co/sQR3Nf0'
             }, ...
-  Desc: Receive an siambit torrent list url and return detail url and its ss
+  Desc: Receive an siambit torrent list url that seeding number is greater or equal
+        and return detail url and its ss
   '''
 
   login_session = get_login_session()
@@ -42,6 +44,19 @@ def get_torrents(siambit_page):
 
   torrent_details = []
   for row in rows:
+
+    seeding_row = row.find_all('td')[-3]
+    seeding = seeding_row.find('span', {'class': 'green'})
+    if seeding == None:
+      seeding = seeding_row.find('font', {'color': '#ff0000'})
+      if seeding == None:
+        seeding = seeding_row.find('font', {'color': '#000000'})
+
+    if seeding == None:
+      # if any above still cannot be found.
+      seeding = 0
+    else:
+      seeding = int(seeding.text)
 
     tag = row.find('td', {'width': "900"})
 
@@ -57,10 +72,11 @@ def get_torrents(siambit_page):
       if ss_tag.has_attr('href'):
         screen_shot_link = ss_tag.attrs['href']
 
-    torrent_details.append({
-      'detail_url': settings.DOMAIN + '/' + torrent_detail_link,
-      'ss_url': screen_shot_link
-    })
+    if seeding > min_seeding:
+      torrent_details.append({
+        'detail_url': settings.DOMAIN + '/' + torrent_detail_link,
+        'ss_url': screen_shot_link
+      })
 
   login_session.close()
 
@@ -169,8 +185,10 @@ def screen_shot_scrapper():
 
   page_num = int(input('Number of page to collect: '))
 
+  seed_num_filter = int(input('Minimum seeding number: '))
+
   # Print conclusion
-  print(f'--- Category = {cat_string}, Sort by = {sort_string}, Total page = {page_num} ---')
+  print(f'--- Category = {cat_string}, Sort by = {sort_string}, Total page = {page_num}, Minimum Seeding = {seed_num_filter} ---')
   print(f'Pages to be extracted are :')
 
   scraping_urls = []
@@ -185,7 +203,7 @@ def screen_shot_scrapper():
 
   torrents = []
   for url in scraping_urls:
-    torrents += get_torrents(url)
+    torrents += get_torrents(url, seed_num_filter)
 
   torrents_with_ss = []
   with alive_bar(len(torrents), dual_line=True, title='Extract images') as bar:
